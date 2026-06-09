@@ -47,28 +47,15 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
 
         // --- Root Layout ---
-        // BorderPane gives us: top (menu/toolbar), left (sidebar),
-        // center (map), right (details), bottom (status bar).
-        // This matches our architecture's UI layout.
         BorderPane root = new BorderPane();
         root.getStyleClass().add("root-pane");
 
-        // --- Placeholder Content (will be replaced in Phase 7) ---
-        VBox centerContent = new VBox(12);
-        centerContent.setAlignment(Pos.CENTER);
-        centerContent.getStyleClass().add("center-placeholder");
+        // Build sidebar
+        VBox sidebar = buildSidebar(root);
+        root.setLeft(sidebar);
 
-        Label titleLabel = new Label("DNSC Smart Campus Facility Finder");
-        titleLabel.getStyleClass().add("app-title");
-
-        Label subtitleLabel = new Label("Powered by KD-Tree Spatial Search");
-        subtitleLabel.getStyleClass().add("app-subtitle");
-
-        Label statusLabel = new Label("Phase 2 Complete — Project skeleton is running.");
-        statusLabel.getStyleClass().add("status-label");
-
-        centerContent.getChildren().addAll(titleLabel, subtitleLabel, statusLabel);
-        root.setCenter(centerContent);
+        // Load Dashboard as the default center screen
+        loadScreen(root, "/views/dashboard.fxml");
 
         // --- Scene Setup ---
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -87,5 +74,79 @@ public class MainApp extends Application {
         primaryStage.centerOnScreen();
 
         primaryStage.show();
+    }
+
+    private VBox buildSidebar(BorderPane root) {
+        VBox sidebar = new VBox(5);
+        sidebar.getStyleClass().add("sidebar");
+        sidebar.setPrefWidth(240);
+
+        // Logo Section
+        javafx.scene.layout.HBox logoBox = new javafx.scene.layout.HBox(12);
+        logoBox.setAlignment(Pos.CENTER_LEFT);
+        logoBox.setPadding(new javafx.geometry.Insets(30, 20, 30, 25));
+        
+        try {
+            javafx.scene.image.Image logoImage = new javafx.scene.image.Image(getClass().getResourceAsStream("/images/logo.png"));
+            javafx.scene.image.ImageView logoView = new javafx.scene.image.ImageView(logoImage);
+            logoView.setFitWidth(40);
+            logoView.setPreserveRatio(true);
+            logoBox.getChildren().add(logoView);
+        } catch (Exception e) {
+            System.err.println("Could not load logo: " + e.getMessage());
+        }
+        
+        Label brandLabel = new Label("DNSC Finder");
+        brandLabel.getStyleClass().add("sidebar-brand");
+        logoBox.getChildren().add(brandLabel);
+        
+        sidebar.getChildren().add(logoBox);
+
+        // Quick Links Header
+        Label quickLinks = new Label("Quick Links");
+        quickLinks.getStyleClass().add("quick-links-header");
+        sidebar.getChildren().add(quickLinks);
+
+        // Navigation Items with CSS Shape Icons
+        String[][] navItems = {
+            {"Dashboard",  "/views/dashboard.fxml", "icon-dashboard"},
+            {"Map View",   "/views/map.fxml", "icon-map"},
+            {"Facilities", "/views/facility_form.fxml", "icon-facilities"},
+            {"Search",     "/views/search.fxml", "icon-search"},
+            {"Benchmark",  "/views/benchmark.fxml", "icon-benchmark"}
+        };
+
+        for (String[] item : navItems) {
+            javafx.scene.control.Button btn = new javafx.scene.control.Button(item[0]);
+            btn.getStyleClass().add("nav-btn");
+            btn.setMaxWidth(Double.MAX_VALUE);
+            
+            // Add SVG Icon
+            javafx.scene.layout.Region icon = new javafx.scene.layout.Region();
+            icon.getStyleClass().addAll("nav-icon", item[2]);
+            btn.setGraphic(icon);
+            btn.setGraphicTextGap(15);
+            
+            String fxmlPath = item[1];
+            btn.setOnAction(e -> loadScreen(root, fxmlPath));
+            sidebar.getChildren().add(btn);
+        }
+
+        return sidebar;
+    }
+
+    private void loadScreen(BorderPane root, String fxmlPath) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource(fxmlPath)
+            );
+            root.setCenter(loader.load());
+        } catch (Exception e) {
+            // Fallback placeholder
+            Label placeholder = new Label("Screen not built yet: " + fxmlPath);
+            placeholder.setStyle("-fx-text-fill: #1e5b3a; -fx-font-size: 18px;");
+            javafx.scene.layout.StackPane p = new javafx.scene.layout.StackPane(placeholder);
+            root.setCenter(p);
+        }
     }
 }

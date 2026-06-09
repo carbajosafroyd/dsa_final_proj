@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.dsa_final_proj.ui.controller.DashboardController"
+            styleClass="dashboard-root">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" styleClass="top-bar">
+            <Label text="Welcome back, Administrator" styleClass="welcome-text"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField promptText="Search facilities..." styleClass="search-field"/>
+        </HBox>
+    </top>
+
+    <!-- Main Content Grid -->
+    <center>
+        <GridPane hgap="25" vgap="25" styleClass="dashboard-content">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.3"/>
+                <ColumnConstraints percentWidth="33.3"/>
+                <ColumnConstraints percentWidth="33.3"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+                <RowConstraints vgrow="ALWAYS"/>
+            </rowConstraints>
+
+            <!-- Card 1: Total Facilities -->
+            <VBox styleClass="stat-card" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Total Facilities" styleClass="card-title"/>
+                <HBox alignment="BOTTOM_LEFT" spacing="10">
+                    <Label fx:id="facilityCountLabel" text="0" styleClass="stat-number"/>
+                    <Label text="↑ 100% active" styleClass="stat-increase"/>
+                </HBox>
+                <Label text="Managed in KD-Tree" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Card 2: KD-Tree Status -->
+            <VBox styleClass="stat-card" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="KD-Tree Status" styleClass="card-title"/>
+                <HBox alignment="BOTTOM_LEFT" spacing="10">
+                    <Label text="Optimal" styleClass="stat-number"/>
+                </HBox>
+                <Label text="Tree depth balanced" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Card 3: Performance -->
+            <VBox styleClass="stat-card" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Avg Query Time" styleClass="card-title"/>
+                <HBox alignment="BOTTOM_LEFT" spacing="10">
+                    <Label text="0.2ms" styleClass="stat-number"/>
+                    <Label text="O(log n)" styleClass="stat-increase"/>
+                </HBox>
+                <Label text="vs O(n) linear search" styleClass="stat-label"/>
+            </VBox>
+
+            <!-- Card 4: Facility Types Chart -->
+            <VBox styleClass="stat-card" spacing="15" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                <Label text="Facility Distribution" styleClass="card-title"/>
+                <PieChart fx:id="facilityTypesChart" legendSide="RIGHT" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Card 5: Recent Activity -->
+            <VBox styleClass="stat-card" spacing="15" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <Label text="System Logs" styleClass="card-title"/>
+                <VBox spacing="15">
+                    <Label text="• KD-Tree initialized" styleClass="stat-label"/>
+                    <Label text="• Facilities loaded from JSON" styleClass="stat-label"/>
+                    <Label text="• Indexing complete" styleClass="stat-label"/>
+                    <Label text="• UI Dashboard ready" styleClass="stat-label"/>
+                </VBox>
+            </VBox>
+
+        </GridPane>
+    </center>
+</BorderPane>
