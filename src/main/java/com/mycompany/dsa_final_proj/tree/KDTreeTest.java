@@ -12,7 +12,6 @@ package com.mycompany.dsa_final_proj.tree;
 
 import com.mycompany.dsa_final_proj.model.Facility;
 import com.mycompany.dsa_final_proj.model.FacilityType;
-import com.mycompany.dsa_final_proj.util.DistanceCalculator;
 
 import java.util.ArrayList;
 import java.util.List;
