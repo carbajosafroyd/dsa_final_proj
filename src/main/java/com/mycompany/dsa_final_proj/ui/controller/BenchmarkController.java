@@ -40,7 +40,8 @@ public class BenchmarkController {
             kdSeries.getData().add(new XYChart.Data<>(res.dataSize, res.kdTreeSearchTimeNs));
         }
 
-        performanceChart.getData().addAll(linearSeries, kdSeries);
+        performanceChart.getData().add(linearSeries);
+        performanceChart.getData().add(kdSeries);
 
         // Update the stats panel with the highest N result
         if (!results.isEmpty()) {

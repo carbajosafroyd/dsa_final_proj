@@ -24,32 +24,34 @@
     </center>
 
     <right>
-        <VBox spacing="20" styleClass="stat-card" prefWidth="250" BorderPane.alignment="TOP_CENTER">
+        <VBox spacing="25" styleClass="control-panel" prefWidth="300" BorderPane.alignment="TOP_CENTER">
             <BorderPane.margin>
-                <Insets left="20"/>
+                <Insets left="30"/>
             </BorderPane.margin>
             
-            <Label text="Spatial Search" styleClass="card-title"/>
+            <Label text="SPATIAL QUERY MODE" styleClass="metric-title"/>
             
-            <VBox spacing="10">
-                <RadioButton fx:id="rbNearest" text="Nearest Neighbor" selected="true"/>
-                <RadioButton fx:id="rbKNearest" text="K-Nearest"/>
+            <VBox spacing="15">
+                <RadioButton fx:id="rbNearest" text="Nearest Neighbor" selected="true" styleClass="modern-radio"/>
+                
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="K = "/>
-                    <Spinner fx:id="kSpinner" prefWidth="70"/>
+                    <RadioButton fx:id="rbKNearest" text="K-Nearest" styleClass="modern-radio"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Spinner fx:id="kSpinner" prefWidth="70" styleClass="modern-spinner"/>
                 </HBox>
-                <RadioButton fx:id="rbRadius" text="Radius Search"/>
+                
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Radius = "/>
-                    <TextField fx:id="radiusField" text="150" prefWidth="70" styleClass="search-field"/>
+                    <RadioButton fx:id="rbRadius" text="Radius Search" styleClass="modern-radio"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="radiusField" text="150" prefWidth="70" styleClass="modern-input"/>
                 </HBox>
             </VBox>
             
-            <Separator/>
+            <Separator styleClass="modern-separator"/>
             
-            <Label text="Search Results" styleClass="card-title"/>
-            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #ffffff; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-                <VBox fx:id="resultContainer" spacing="15"/>
+            <Label text="SEARCH RESULTS" styleClass="metric-title"/>
+            <ScrollPane fitToWidth="true" styleClass="results-scroll" VBox.vgrow="ALWAYS">
+                <VBox fx:id="resultContainer" spacing="12"/>
             </ScrollPane>
             
         </VBox>

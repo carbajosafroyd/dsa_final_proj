@@ -78,7 +78,7 @@ public class MapController {
         redrawMap(); // Clear previous search lines/circles
         
         // Draw the user's click point
-        gc.setFill(Color.web("#e74c3c")); // Red query point
+        gc.setFill(Color.web("#0b3d22")); // Deep Forest Green query point
         gc.fillOval(x - 5, y - 5, 10, 10);
         
         resultContainer.getChildren().clear();
@@ -100,10 +100,10 @@ public class MapController {
             try {
                 double r = Double.parseDouble(radiusField.getText());
                 // Draw the search radius circle
-                gc.setStroke(Color.rgb(39, 174, 96, 0.4)); // Translucent green
+                gc.setStroke(Color.rgb(11, 61, 34, 0.4)); // Translucent forest green
                 gc.setLineWidth(2);
                 gc.strokeOval(x - r, y - r, r * 2, r * 2);
-                gc.setFill(Color.rgb(39, 174, 96, 0.1));
+                gc.setFill(Color.rgb(11, 61, 34, 0.1));
                 gc.fillOval(x - r, y - r, r * 2, r * 2);
                 
                 List<SearchResult> results = searchService.findWithinRadius(x, y, r);
@@ -119,14 +119,14 @@ public class MapController {
     
     private void drawResultLine(double qx, double qy, Facility f) {
         // Draw connecting line
-        gc.setStroke(Color.web("#1e5b3a")); // Forest Green line
+        gc.setStroke(Color.web("#27ae60")); // Vibrant Green line
         gc.setLineWidth(2.5);
         gc.setLineDashes(5); // Dashed line effect
         gc.strokeLine(qx, qy, f.x, f.y);
         gc.setLineDashes(0); // Reset dashes
         
         // Highlight found facility
-        gc.setStroke(Color.web("#f1c40f")); // Gold highlight ring
+        gc.setStroke(Color.web("#4affa0")); // Bright green accent ring
         gc.setLineWidth(3);
         gc.strokeOval(f.x - 9, f.y - 9, 18, 18);
     }
@@ -134,21 +134,23 @@ public class MapController {
     private void showResultText(List<SearchResult> results) {
         if (results.isEmpty()) {
             Label noRes = new Label("No facilities found.");
-            noRes.setStyle("-fx-text-fill: #e74c3c;");
+            noRes.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 13px;");
             resultContainer.getChildren().add(noRes);
             return;
         }
         
         for (SearchResult r : results) {
             VBox box = new VBox(2);
+            box.getStyleClass().add("result-item");
+            
             Label nameLbl = new Label(r.facility.name);
-            nameLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-font-size: 13px;");
+            nameLbl.getStyleClass().add("result-name");
             
             Label typeLbl = new Label(r.facility.type);
-            typeLbl.setStyle("-fx-text-fill: #8a9990; -fx-font-size: 11px;");
+            typeLbl.getStyleClass().add("result-type");
             
             Label distLbl = new Label(String.format("Distance: %.1f px", r.distance));
-            distLbl.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 12px;");
+            distLbl.getStyleClass().add("result-distance");
             
             box.getChildren().addAll(nameLbl, typeLbl, distLbl);
             resultContainer.getChildren().add(box);

@@ -1,7 +1,7 @@
 package com.mycompany.dsa_final_proj.ui.controller;
 
 import com.mycompany.dsa_final_proj.ui.StubServices.StubFacilityService;
-import com.mycompany.dsa_final_proj.ui.StubServices.Facility;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.chart.PieChart;

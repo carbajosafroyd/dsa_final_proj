@@ -74,65 +74,136 @@
 .icon-benchmark { -fx-shape: "M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"; }
 
 /* ============================================================
-   TOP BAR
+   DASHBOARD HEADERS & CONTENT
    ============================================================ */
-.top-bar {
-    -fx-background-color: #ffffff;
-    -fx-padding: 15 30 15 30;
-    -fx-border-color: #e6eae8;
-    -fx-border-width: 0 0 1 0;
+.dashboard-header {
+    -fx-padding: 30 40 10 40;
 }
-
-.welcome-text {
-    -fx-font-size: 20px;
+.header-title {
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-text-fill: #1a1a1a;
+    -fx-text-fill: #111827; /* Dark slate */
+}
+.header-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6b7280; /* Gray */
+    -fx-padding: 5 0 0 0;
 }
 
-.search-field {
-    -fx-background-color: #f4f6f5;
-    -fx-border-color: #e0e4e2;
-    -fx-border-radius: 20;
-    -fx-background-radius: 20;
-    -fx-padding: 8 15 8 15;
-    -fx-pref-width: 250;
+.dashboard-content {
+    -fx-padding: 20 40 40 40;
 }
 
 /* ============================================================
-   DASHBOARD CARDS
+   MINIMALIST CARDS
    ============================================================ */
-.dashboard-content {
-    -fx-padding: 30;
-}
-
-.stat-card {
+.metric-card, .chart-card {
     -fx-background-color: #ffffff;
-    -fx-background-radius: 12;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 10, 0, 0, 4);
+}
+
+.metric-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9ca3af;
+    -fx-padding: 0 0 10 0;
+}
+
+.metric-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.metric-value-green {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #124d2d; /* Forest Green */
+}
+
+.metric-value-blue {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27ae60; /* Vibrant Green */
+}
+
+.metric-caption {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+    -fx-padding: 5 0 0 0;
+}
+
+.chart-card {
+    -fx-alignment: center-left;
+}
+
+/* ============================================================
+   MAP VIEW & CONTROL PANEL
+   ============================================================ */
+.control-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
     -fx-padding: 25;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 15, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 10, 0, 0, 4);
 }
 
-.card-title {
+.modern-radio {
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1a1a1a;
+    -fx-text-fill: #374151;
 }
 
-.stat-number {
-    -fx-font-size: 32px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1a1a1a;
+.modern-input, .modern-spinner {
+    -fx-background-color: #f3f4f6;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5;
 }
 
-.stat-increase {
+.modern-separator {
+    -fx-padding: 10 0 10 0;
+}
+
+.results-scroll {
+    -fx-background-color: transparent;
+    -fx-background: #ffffff;
+    -fx-border-color: transparent;
+}
+.results-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.result-item {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 6;
+    -fx-border-color: #f3f4f6;
+    -fx-border-radius: 6;
+    -fx-padding: 12;
+}
+
+.result-name {
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+    -fx-font-size: 13px;
+}
+
+.result-type {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 11px;
+}
+
+.result-distance {
+    -fx-text-fill: #10b981;
+    -fx-font-weight: bold;
     -fx-font-size: 12px;
-    -fx-text-fill: #27ae60;
-    -fx-font-weight: bold;
-}
-
-.stat-label {
-    -fx-font-size: 12px;
-    -fx-text-fill: #8a9990;
 }
 
 /* ============================================================
@@ -226,3 +297,20 @@
 .list-cell:selected {
     -fx-background-color: #e6f0ea;
 }
+
+/* ============================================================
+   CHART THEME COLORS
+   ============================================================ */
+/* Pie Chart Colors (Facility Distribution) */
+.default-color0.chart-pie { -fx-pie-color: #0b3d22; }
+.default-color1.chart-pie { -fx-pie-color: #27ae60; }
+.default-color2.chart-pie { -fx-pie-color: #1e5b3a; }
+.default-color3.chart-pie { -fx-pie-color: #4affa0; }
+.default-color4.chart-pie { -fx-pie-color: #b3c9bc; }
+.default-color5.chart-pie { -fx-pie-color: #8a9990; }
+
+/* Line Chart Colors (Benchmark) */
+.default-color0.chart-series-line { -fx-stroke: #8a9990; -fx-stroke-width: 3px; }
+.default-color1.chart-series-line { -fx-stroke: #27ae60; -fx-stroke-width: 3px; }
+.default-color0.chart-line-symbol { -fx-background-color: #8a9990, white; }
+.default-color1.chart-line-symbol { -fx-background-color: #27ae60, white; }
