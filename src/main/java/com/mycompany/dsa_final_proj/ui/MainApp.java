@@ -96,7 +96,7 @@ public class MainApp extends Application {
             System.err.println("Could not load logo: " + e.getMessage());
         }
         
-        Label brandLabel = new Label("DNSC Finder");
+        Label brandLabel = new Label("DNSC FACILITY FINDER");
         brandLabel.getStyleClass().add("sidebar-brand");
         logoBox.getChildren().add(brandLabel);
         
