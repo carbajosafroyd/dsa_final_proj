@@ -10,8 +10,10 @@ import com.mycompany.dsa_final_proj.model.SearchResult;
 import com.mycompany.dsa_final_proj.util.DistanceCalculator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * A 2-Dimensional KD-Tree for spatial indexing of campus facilities.
@@ -377,9 +379,227 @@ public class KDTree {
     // SEARCH OPERATIONS (to be implemented in Phases 5 & 6)
     // ═══════════════════════════════════════════════════════════════════
 
-    // Phase 5: nearestNeighbor(double x, double y)
-    // Phase 5: kNearestNeighbors(double x, double y, int k)
-    // Phase 6: radiusSearch(double x, double y, double radius)
+    /**
+     * Finds the nearest active facility to the given (x, y) coordinates.
+     *
+     * <p><strong>Algorithm (Nearest Neighbor Backtracking):</strong></p>
+     * <ol>
+     *   <li>Descend the tree to find the leaf node where the target WOULD be inserted.</li>
+     *   <li>On the way back up (backtracking), update the best known distance if the current node is closer.</li>
+     *   <li><strong>Pruning step:</strong> Calculate the perpendicular distance to the splitting plane.
+     *       If this distance is LESS than the best known distance, the other subtree might contain a closer point,
+     *       so we must search it. Otherwise, we can safely prune (skip) the entire other subtree.</li>
+     * </ol>
+     *
+     * @param x the target X coordinate
+     * @param y the target Y coordinate
+     * @return a SearchResult containing the nearest facility and its distance, or null if tree is empty
+     */
+    public SearchResult nearestNeighbor(double x, double y) {
+        if (root == null || activeSize == 0) {
+            return null;
+        }
+
+        KDNode bestNode = nearestRecursive(root, x, y, 0, null);
+
+        if (bestNode == null) {
+            return null; // Should only happen if all nodes are inactive
+        }
+
+        double distance = DistanceCalculator.euclideanDistance(
+                x, y, bestNode.getFacility().getX(), bestNode.getFacility().getY());
+
+        return new SearchResult(bestNode.getFacility(), distance);
+    }
+
+    private KDNode nearestRecursive(KDNode node, double targetX, double targetY, int depth, KDNode currentBest) {
+        if (node == null) {
+            return currentBest;
+        }
+
+        KDNode best = currentBest;
+
+        // Check if the current node is active and closer than the current best
+        if (node.getFacility().isActive()) {
+            if (best == null) {
+                best = node;
+            } else {
+                double currentDistSq = DistanceCalculator.squaredDistance(
+                        targetX, targetY, node.getFacility().getX(), node.getFacility().getY());
+                double bestDistSq = DistanceCalculator.squaredDistance(
+                        targetX, targetY, best.getFacility().getX(), best.getFacility().getY());
+
+                if (currentDistSq < bestDistSq) {
+                    best = node;
+                }
+            }
+        }
+
+        // Determine which subtree to search first (the one that naturally contains the target)
+        int dimension = node.getSplitDimension();
+        double targetVal = (dimension == 0) ? targetX : targetY;
+        double nodeVal = node.getSplitValue();
+
+        KDNode firstSide = (targetVal < nodeVal) ? node.getLeft() : node.getRight();
+        KDNode secondSide = (targetVal < nodeVal) ? node.getRight() : node.getLeft();
+
+        // 1. Always search the side the target point belongs to
+        best = nearestRecursive(firstSide, targetX, targetY, depth + 1, best);
+
+        // 2. Check if we need to search the other side
+        if (best != null) {
+            double bestDistSq = DistanceCalculator.squaredDistance(
+                    targetX, targetY, best.getFacility().getX(), best.getFacility().getY());
+
+            // Perpendicular distance from target to the splitting plane (squared)
+            double axisDistSq = (targetVal - nodeVal) * (targetVal - nodeVal);
+
+            // If the splitting plane is closer than our current best, the other side might have a better point
+            if (axisDistSq < bestDistSq) {
+                best = nearestRecursive(secondSide, targetX, targetY, depth + 1, best);
+            }
+        } else {
+            // If best is still null (e.g., all nodes visited so far were inactive), we must search the other side
+            best = nearestRecursive(secondSide, targetX, targetY, depth + 1, best);
+        }
+
+        return best;
+    }
+
+    /**
+     * Finds the K nearest active facilities to the given (x, y) coordinates.
+     *
+     * <p>Uses the same backtracking logic as nearestNeighbor, but maintains a
+     * Max-Heap (PriorityQueue) of size K to keep track of the closest points found so far.</p>
+     *
+     * @param x the target X coordinate
+     * @param y the target Y coordinate
+     * @param k the maximum number of facilities to return
+     * @return a sorted list of the K nearest facilities
+     */
+    public List<SearchResult> kNearestNeighbors(double x, double y, int k) {
+        if (root == null || activeSize == 0 || k <= 0) {
+            return new ArrayList<>();
+        }
+
+        // Max-Heap: The furthest of the K-nearest elements sits at the root of the PriorityQueue.
+        // Collections.reverseOrder() ensures that the largest distance is polled first.
+        PriorityQueue<SearchResult> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        kNearestRecursive(root, x, y, k, 0, pq);
+
+        // Extract results from Max-Heap into a list
+        List<SearchResult> result = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            result.add(pq.poll());
+        }
+
+        // The Max-Heap gives us elements from furthest to closest. Reverse to get closest first.
+        Collections.reverse(result);
+        return result;
+    }
+
+    private void kNearestRecursive(KDNode node, double targetX, double targetY, int k, int depth, PriorityQueue<SearchResult> pq) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.getFacility().isActive()) {
+            double dist = DistanceCalculator.euclideanDistance(
+                    targetX, targetY, node.getFacility().getX(), node.getFacility().getY());
+
+            if (pq.size() < k) {
+                pq.offer(new SearchResult(node.getFacility(), dist));
+            } else if (dist < pq.peek().getDistance()) {
+                // We found a closer point. Remove the furthest point in our top K, and add this new one.
+                pq.poll();
+                pq.offer(new SearchResult(node.getFacility(), dist));
+            }
+        }
+
+        int dimension = node.getSplitDimension();
+        double targetVal = (dimension == 0) ? targetX : targetY;
+        double nodeVal = node.getSplitValue();
+
+        KDNode firstSide = (targetVal < nodeVal) ? node.getLeft() : node.getRight();
+        KDNode secondSide = (targetVal < nodeVal) ? node.getRight() : node.getLeft();
+
+        kNearestRecursive(firstSide, targetX, targetY, k, depth + 1, pq);
+
+        // Do we need to explore the other side?
+        if (pq.size() < k) {
+            // We haven't even found K elements yet, we MUST search the other side
+            kNearestRecursive(secondSide, targetX, targetY, k, depth + 1, pq);
+        } else {
+            // Check if the splitting plane is closer than the FURTHEST point in our top K
+            double worstDist = pq.peek().getDistance();
+            double axisDist = Math.abs(targetVal - nodeVal);
+
+            if (axisDist < worstDist) {
+                kNearestRecursive(secondSide, targetX, targetY, k, depth + 1, pq);
+            }
+        }
+    }
+
+    /**
+     * Finds all active facilities within a specific radius of the target coordinates.
+     *
+     * <p><strong>Algorithm (Range Search):</strong></p>
+     * <ol>
+     *   <li>At each node, check if the facility is within the radius. If so, add it.</li>
+     *   <li><strong>Pruning step:</strong> Check if the search circle intersects the left/right sub-spaces.
+     *       If {@code target - radius <= splitValue}, search the left child.
+     *       If {@code target + radius >= splitValue}, search the right child.</li>
+     * </ol>
+     *
+     * @param x the target X coordinate
+     * @param y the target Y coordinate
+     * @param radius the maximum Euclidean distance to search
+     * @return a list of facilities within the radius, sorted by distance (closest first)
+     */
+    public List<SearchResult> radiusSearch(double x, double y, double radius) {
+        List<SearchResult> results = new ArrayList<>();
+        if (root == null || activeSize == 0 || radius < 0) {
+            return results;
+        }
+
+        double radiusSq = radius * radius; // Use squared radius to avoid Math.sqrt during traversal
+        radiusRecursive(root, x, y, radius, radiusSq, 0, results);
+
+        // Sort by distance (closest first)
+        Collections.sort(results);
+        return results;
+    }
+
+    private void radiusRecursive(KDNode node, double targetX, double targetY, double radius, double radiusSq, int depth, List<SearchResult> results) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.getFacility().isActive()) {
+            double distSq = DistanceCalculator.squaredDistance(
+                    targetX, targetY, node.getFacility().getX(), node.getFacility().getY());
+            
+            if (distSq <= radiusSq) {
+                // Point is inside the circle. Calculate true distance for the SearchResult.
+                results.add(new SearchResult(node.getFacility(), Math.sqrt(distSq)));
+            }
+        }
+
+        int dimension = node.getSplitDimension();
+        double targetVal = (dimension == 0) ? targetX : targetY;
+        double nodeVal = node.getSplitValue();
+
+        // Does the search circle overlap with the left half-plane?
+        if (targetVal - radius <= nodeVal) {
+            radiusRecursive(node.getLeft(), targetX, targetY, radius, radiusSq, depth + 1, results);
+        }
+
+        // Does the search circle overlap with the right half-plane?
+        if (targetVal + radius >= nodeVal) {
+            radiusRecursive(node.getRight(), targetX, targetY, radius, radiusSq, depth + 1, results);
+        }
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     // ACCESSORS

@@ -48,7 +48,11 @@ public class SearchResult implements Comparable<SearchResult> {
      */
     @Override
     public int compareTo(SearchResult other) {
-        return Double.compare(this.distance, other.distance);
+        int cmp = Double.compare(this.distance, other.distance);
+        if (cmp == 0) {
+            return this.facility.getName().compareTo(other.facility.getName());
+        }
+        return cmp;
     }
 
     @Override
