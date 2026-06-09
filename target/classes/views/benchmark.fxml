@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mycompany.dsa_final_proj.ui.controller.BenchmarkController"
+      styleClass="dashboard-content" spacing="25">
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox>
+            <Label text="System Performance Benchmarks" styleClass="dash-subtitle"/>
+            <Label text="Linear Search O(n) vs KD-Tree O(log n)" styleClass="stat-label"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Run Benchmark Suite" onAction="#handleRunBenchmark" styleClass="action-btn"/>
+    </HBox>
+
+    <HBox spacing="25" VBox.vgrow="ALWAYS">
+        <!-- The Chart -->
+        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <LineChart fx:id="performanceChart" title="Search Time (Nanoseconds) vs Data Size" createSymbols="true" VBox.vgrow="ALWAYS">
+                <xAxis>
+                    <NumberAxis label="Number of Facilities (N)" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Time (ns)" />
+                </yAxis>
+            </LineChart>
+        </VBox>
+        
+        <!-- The Stats Panel -->
+        <VBox styleClass="stat-card" spacing="20" minWidth="250">
+            <Label text="Latest Results (N=100,000)" styleClass="card-title"/>
+            
+            <VBox spacing="5">
+                <Label text="Linear Search" styleClass="stat-label"/>
+                <Label fx:id="linearTimeLabel" text="0 ns" styleClass="stat-number" style="-fx-text-fill: #e74c3c; -fx-font-size: 24px;"/>
+            </VBox>
+            
+            <VBox spacing="5">
+                <Label text="KD-Tree Search" styleClass="stat-label"/>
+                <Label fx:id="kdTimeLabel" text="0 ns" styleClass="stat-number" style="-fx-text-fill: #27ae60; -fx-font-size: 24px;"/>
+            </VBox>
+            
+            <Separator/>
+            
+            <VBox spacing="5">
+                <Label text="Speedup Factor" styleClass="stat-label"/>
+                <Label fx:id="speedupLabel" text="0x Faster" styleClass="stat-number" style="-fx-text-fill: #f1c40f; -fx-font-size: 24px;"/>
+            </VBox>
+        </VBox>
+    </HBox>
+
+</VBox>

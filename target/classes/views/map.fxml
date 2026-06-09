@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.dsa_final_proj.ui.controller.MapController"
+            styleClass="dashboard-content">
+
+    <center>
+        <StackPane styleClass="stat-card">
+            <!-- The Map Image -->
+            <ImageView fx:id="mapImageView" preserveRatio="true" fitWidth="750" fitHeight="550">
+                <image>
+                    <Image url="@/images/map-v2.png"/>
+                </image>
+            </ImageView>
+            <!-- The drawing canvas overlay -->
+            <Canvas fx:id="mapCanvas" width="750" height="550" onMouseClicked="#handleCanvasClick"/>
+        </StackPane>
+    </center>
+
+    <right>
+        <VBox spacing="20" styleClass="stat-card" prefWidth="250" BorderPane.alignment="TOP_CENTER">
+            <BorderPane.margin>
+                <Insets left="20"/>
+            </BorderPane.margin>
+            
+            <Label text="Spatial Search" styleClass="card-title"/>
+            
+            <VBox spacing="10">
+                <RadioButton fx:id="rbNearest" text="Nearest Neighbor" selected="true"/>
+                <RadioButton fx:id="rbKNearest" text="K-Nearest"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="K = "/>
+                    <Spinner fx:id="kSpinner" prefWidth="70"/>
+                </HBox>
+                <RadioButton fx:id="rbRadius" text="Radius Search"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Radius = "/>
+                    <TextField fx:id="radiusField" text="150" prefWidth="70" styleClass="search-field"/>
+                </HBox>
+            </VBox>
+            
+            <Separator/>
+            
+            <Label text="Search Results" styleClass="card-title"/>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #ffffff; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                <VBox fx:id="resultContainer" spacing="15"/>
+            </ScrollPane>
+            
+        </VBox>
+    </right>
+
+</BorderPane>
