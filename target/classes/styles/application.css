@@ -1,0 +1,51 @@
+/*
+ * DNSC Smart Campus Facility Finder — Application Stylesheet
+ *
+ * Design Philosophy:
+ * - Dark theme with blue accent colors (professional, modern)
+ * - Consistent spacing and typography
+ * - All color values defined here for easy theming
+ *
+ * This stylesheet is loaded in MainApp.java and applies globally.
+ */
+
+/* ============================================================
+   ROOT & GLOBAL
+   ============================================================ */
+
+.root-pane {
+    -fx-background-color: #0f0f1a;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+
+.app-title {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e8e8f0;
+}
+
+.app-subtitle {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #7a7aaf;
+}
+
+.status-label {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: #4a9eff;
+    -fx-padding: 20 0 0 0;
+}
+
+/* ============================================================
+   LAYOUT REGIONS
+   ============================================================ */
+
+.center-placeholder {
+    -fx-padding: 40;
+}
