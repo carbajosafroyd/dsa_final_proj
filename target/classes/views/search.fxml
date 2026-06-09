@@ -15,8 +15,8 @@
         <!-- Search Bar -->
         <HBox spacing="10" alignment="CENTER">
             <TextField fx:id="searchField" promptText="Search by facility name or description keywords..." 
-                       styleClass="search-field" prefWidth="500" />
-            <Button text="Search" onAction="#handleSearch" styleClass="action-btn"/>
+                       styleClass="search-field" prefWidth="500" prefHeight="40" />
+            <Button text="Search" onAction="#handleSearch" styleClass="action-btn" prefHeight="40"/>
         </HBox>
         
         <!-- Type Filters -->
