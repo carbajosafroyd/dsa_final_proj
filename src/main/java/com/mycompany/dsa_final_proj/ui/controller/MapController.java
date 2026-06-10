@@ -37,28 +37,23 @@ public class MapController {
     public void initialize() {
         gc = mapCanvas.getGraphicsContext2D();
         
-        // Group the search mode radio buttons
         searchGroup = new ToggleGroup();
         rbNearest.setToggleGroup(searchGroup);
         rbKNearest.setToggleGroup(searchGroup);
         rbRadius.setToggleGroup(searchGroup);
         
-        // Initialize K spinner
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 3);
         kSpinner.setValueFactory(valueFactory);
 
-        // Draw the initial points over the map
         redrawMap();
     }
 
     private void redrawMap() {
         gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
         
-        // Draw every facility in the database as a colored dot
         for (Facility f : facilityService.getAllFacilities()) {
             gc.setFill(getColorForType(f.type));
             gc.fillOval(f.x - 6, f.y - 6, 12, 12);
-            // Draw a white border around dots for visibility
             gc.setStroke(Color.WHITE);
             gc.setLineWidth(1.5);
             gc.strokeOval(f.x - 6, f.y - 6, 12, 12);
@@ -75,15 +70,13 @@ public class MapController {
             return;
         }
         
-        redrawMap(); // Clear previous search lines/circles
+        redrawMap();
         
-        // Draw the user's click point
-        gc.setFill(Color.web("#0b3d22")); // Deep Forest Green query point
+        gc.setFill(Color.web("#0b3d22"));
         gc.fillOval(x - 5, y - 5, 10, 10);
         
         resultContainer.getChildren().clear();
 
-        // Perform spatial search based on selected mode
         if (rbNearest.isSelected()) {
             SearchResult result = searchService.findNearest(x, y);
             if (result != null) {
@@ -99,8 +92,7 @@ public class MapController {
         } else if (rbRadius.isSelected()) {
             try {
                 double r = Double.parseDouble(radiusField.getText());
-                // Draw the search radius circle
-                gc.setStroke(Color.rgb(11, 61, 34, 0.4)); // Translucent forest green
+                gc.setStroke(Color.rgb(11, 61, 34, 0.4));
                 gc.setLineWidth(2);
                 gc.strokeOval(x - r, y - r, r * 2, r * 2);
                 gc.setFill(Color.rgb(11, 61, 34, 0.1));
@@ -118,15 +110,13 @@ public class MapController {
     }
     
     private void drawResultLine(double qx, double qy, Facility f) {
-        // Draw connecting line
-        gc.setStroke(Color.web("#27ae60")); // Vibrant Green line
+        gc.setStroke(Color.web("#27ae60"));
         gc.setLineWidth(2.5);
-        gc.setLineDashes(5); // Dashed line effect
+        gc.setLineDashes(5);
         gc.strokeLine(qx, qy, f.x, f.y);
-        gc.setLineDashes(0); // Reset dashes
+        gc.setLineDashes(0);
         
-        // Highlight found facility
-        gc.setStroke(Color.web("#4affa0")); // Bright green accent ring
+        gc.setStroke(Color.web("#4affa0"));
         gc.setLineWidth(3);
         gc.strokeOval(f.x - 9, f.y - 9, 18, 18);
     }
@@ -159,12 +149,12 @@ public class MapController {
 
     private Color getColorForType(String type) {
         switch (type) {
-            case "ACADEMIC": return Color.web("#3498db"); // Blue
-            case "MEDICAL": return Color.web("#e74c3c"); // Red
-            case "SPORTS": return Color.web("#e67e22"); // Orange
-            case "FOOD_SERVICE": return Color.web("#f1c40f"); // Yellow
-            case "ADMINISTRATIVE": return Color.web("#1e5b3a"); // Forest Green
-            default: return Color.web("#95a5a6"); // Gray
+            case "ACADEMIC": return Color.web("#3498db");
+            case "MEDICAL": return Color.web("#e74c3c");
+            case "SPORTS": return Color.web("#e67e22");
+            case "FOOD_SERVICE": return Color.web("#f1c40f");
+            case "ADMINISTRATIVE": return Color.web("#1e5b3a");
+            default: return Color.web("#95a5a6");
         }
     }
 

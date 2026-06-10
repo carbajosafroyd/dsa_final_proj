@@ -30,24 +30,44 @@ Let me pass it to Froyd to explain how the KD-Tree works."
 ---
 
 ## MEMBER 2 — Algorithm (~3 min)
-
-**[Slide: KD-Tree diagram showing alternating X/Y splits]**
-
-"So a KD-Tree works like a binary search tree, but it alternates between comparing X and Y at each level.
-
-At depth 0, we split by X. At depth 1, we split by Y. Depth 2, X again. And so on. This divides the map into smaller and smaller regions.
-
-**[Slide: Nearest Neighbor — 3 steps]**
-
-The main algorithm is Nearest Neighbor Search, and it has three steps:
-
-**First**, we go down the tree like we're inserting the point — that gives us an initial guess.
-
-**Second**, as we go back up, we check if the current node is closer than our guess. If yes, we update.
-
-**Third** — and this is the important part — at each node, we check the distance from our target to the splitting line. If that distance is bigger than our current best, we skip the entire other side of the tree. That's called **pruning**, and that's what makes it O(log n).
-
-We also implemented K-Nearest using a Max-Heap to track the top K results, and Radius Search which checks if the search circle crosses each splitting line.
+[Show the diagram on screen]                           
+                                                         
+  "So this is how a KD-Tree is structured. It looks like 
+  a regular binary tree, but with one key difference —     
+  notice the alternating colors.                         
+                                                         
+  Pink nodes compare X. Blue nodes compare Y.            
+                                                         
+  At depth 0 — the root — it's pink, so we compare X     
+  coordinates. If a facility's X is smaller, we go left. 
+  If it's bigger, we go right.                           
+                                                         
+  At depth 1 — it switches to blue — now we compare Y.   
+  Smaller Y goes left, bigger goes right.                
+                                                         
+  At depth 2 — back to pink — X again. And it just keeps 
+  alternating. That's literally the whole structure of a 
+  KD-Tree. Each level cuts the map in a different        
+  direction.                                             
+                                                         
+  [Pause, then explain the search]                       
+                                                         
+  Now, why is this fast? Let's say I'm searching for the 
+  nearest facility. I start at the top and go down — left
+  or right — based on my coordinates. That gives me an   
+  initial guess.                                         
+                                                         
+  Then as I go back up, at each node I ask: Could there  
+  be something closer on the other side? I check the     
+  distance to the splitting line. If my current best is  
+  already closer than that line — I skip the entire other
+  side. That's called pruning.                           
+                                                         
+  That's why it's O(log n). Instead of checking every    
+  facility, we skip half the tree at almost every level. 
+                                                         
+  That's the KD-Tree. [Member 3] will now show the actual
+  system."             
 
 [Member 3] will now show the system."
 
@@ -113,7 +133,7 @@ The numbers: at 1 million facilities, Linear Search took about 6.3 million nanos
 
 Why? Because Linear Search is O(n) — more data means more time. KD-Tree is O(log n) — even with a million entries, it only visits around 20 nodes because of pruning.
 
-That proves our data structure works. [Member 5] will close us out."
+That proves our data structure works. Now will proceed to the last part and kyle will close us out."
 
 ---
 

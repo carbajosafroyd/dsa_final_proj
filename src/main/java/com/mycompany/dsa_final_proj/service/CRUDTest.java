@@ -22,7 +22,6 @@ public class CRUDTest {
         System.out.println("║    Phase 4 Verification: CRUD & Persistence          ║");
         System.out.println("╚══════════════════════════════════════════════════════╝\n");
 
-        // Use a test-specific JSON file
         System.setProperty("user.home", System.getProperty("user.dir") + "/target");
         File jsonFile = new File(System.getProperty("user.dir") + "/target/dnsc_facilities.json");
         if (jsonFile.exists()) {
@@ -57,11 +56,9 @@ public class CRUDTest {
 
     private static void testLoadAndRebuildTree() {
         System.out.println("── Test: Load JSON & Rebuild Tree ──────────────────────");
-        // Simulate an app restart by creating entirely new instances
         KDTree newTree = new KDTree();
         DataStore newStore = new DataStore();
         
-        // The constructor should automatically load the JSON and call buildBalanced()
         FacilityService newService = new FacilityService(newTree, newStore);
 
         List<Facility> loaded = newService.getAllFacilities();
@@ -82,7 +79,7 @@ public class CRUDTest {
         System.out.println("── Test: Update Facility ───────────────────────────────");
         KDTree tree = new KDTree();
         DataStore store = new DataStore();
-        FacilityService service = new FacilityService(tree, store); // Will load the 2 facilities
+        FacilityService service = new FacilityService(tree, store);
 
         Facility oldFac = new Facility("Library", 50, 50, FacilityType.ACADEMIC, "Main Library");
         Facility newFac = new Facility("Library (Renovated)", 55, 55, FacilityType.ACADEMIC, "Updated");

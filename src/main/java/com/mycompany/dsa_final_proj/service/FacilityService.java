@@ -36,7 +36,6 @@ public class FacilityService {
         this.tree = tree;
         this.dataStore = dataStore;
 
-        // On startup: load flat list from JSON and build a balanced tree
         List<Facility> savedFacilities = dataStore.load();
         if (!savedFacilities.isEmpty()) {
             tree.buildBalanced(savedFacilities);
@@ -77,16 +76,13 @@ public class FacilityService {
     public boolean updateFacility(Facility oldFacility, Facility newFacility) {
         if (oldFacility == null || newFacility == null) return false;
 
-        // 1. Remove the old one
         boolean deleted = tree.delete(oldFacility);
         if (!deleted) {
-            return false; // Could not find the old facility
+            return false;
         }
 
-        // 2. Insert the new one
         tree.insert(newFacility);
         
-        // 3. Save to JSON
         saveState();
         return true;
     }
@@ -109,7 +105,6 @@ public class FacilityService {
     }
 
     private void saveState() {
-        // Save only the active facilities
         dataStore.save(tree.getAllFacilities());
     }
 }

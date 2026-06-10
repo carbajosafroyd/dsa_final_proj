@@ -46,31 +46,24 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // --- Root Layout ---
         BorderPane root = new BorderPane();
         root.getStyleClass().add("root-pane");
 
-        // Build sidebar
         VBox sidebar = buildSidebar(root);
         root.setLeft(sidebar);
 
-        // Load Dashboard as the default center screen
         loadScreen(root, "/views/dashboard.fxml");
 
-        // --- Scene Setup ---
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        // Load the application stylesheet
         String cssPath = getClass().getResource("/styles/application.css").toExternalForm();
         scene.getStylesheets().add(cssPath);
 
-        // --- Stage (Window) Configuration ---
         primaryStage.setTitle(APP_TITLE);
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
 
-        // Center on screen
         primaryStage.centerOnScreen();
 
         primaryStage.show();
@@ -81,7 +74,6 @@ public class MainApp extends Application {
         sidebar.getStyleClass().add("sidebar");
         sidebar.setPrefWidth(240);
 
-        // Logo Section
         javafx.scene.layout.HBox logoBox = new javafx.scene.layout.HBox(12);
         logoBox.setAlignment(Pos.CENTER_LEFT);
         logoBox.setPadding(new javafx.geometry.Insets(30, 20, 30, 25));
@@ -102,12 +94,10 @@ public class MainApp extends Application {
         
         sidebar.getChildren().add(logoBox);
 
-        // Quick Links Header
         Label quickLinks = new Label("Quick Links");
         quickLinks.getStyleClass().add("quick-links-header");
         sidebar.getChildren().add(quickLinks);
 
-        // Navigation Items with CSS Shape Icons
         String[][] navItems = {
             {"Dashboard",  "/views/dashboard.fxml", "icon-dashboard"},
             {"Map View",   "/views/map.fxml", "icon-map"},
@@ -121,7 +111,6 @@ public class MainApp extends Application {
             btn.getStyleClass().add("nav-btn");
             btn.setMaxWidth(Double.MAX_VALUE);
             
-            // Add SVG Icon
             javafx.scene.layout.Region icon = new javafx.scene.layout.Region();
             icon.getStyleClass().addAll("nav-icon", item[2]);
             btn.setGraphic(icon);
@@ -142,7 +131,6 @@ public class MainApp extends Application {
             );
             root.setCenter(loader.load());
         } catch (Exception e) {
-            // Fallback placeholder
             Label placeholder = new Label("Screen not built yet: " + fxmlPath);
             placeholder.setStyle("-fx-text-fill: #1e5b3a; -fx-font-size: 18px;");
             javafx.scene.layout.StackPane p = new javafx.scene.layout.StackPane(placeholder);

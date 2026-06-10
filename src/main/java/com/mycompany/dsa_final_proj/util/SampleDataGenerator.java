@@ -31,7 +31,7 @@ public final class SampleDataGenerator {
      */
     public static List<Facility> generateRandomFacilities(int count, double maxX, double maxY) {
         List<Facility> list = new ArrayList<>(count);
-        Random random = new Random(42); // Fixed seed for reproducible benchmarks
+        Random random = new Random(42);
         
         FacilityType[] types = FacilityType.values();
 

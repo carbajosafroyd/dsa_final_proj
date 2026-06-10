@@ -28,7 +28,6 @@ public class SearchController {
         
         resultsList.setItems(filteredFacilities);
         
-        // Custom Cell Factory to render facilities beautifully in the list
         resultsList.setCellFactory(listView -> new ListCell<Facility>() {
             @Override
             protected void updateItem(Facility item, boolean empty) {
@@ -54,7 +53,6 @@ public class SearchController {
             }
         });
 
-        // Initialize Filter Radio Buttons
         String[] types = {"ALL", "ACADEMIC", "MEDICAL", "SPORTS", "FOOD_SERVICE", "ADMINISTRATIVE", "UTILITY"};
         ToggleGroup group = new ToggleGroup();
         
@@ -64,14 +62,12 @@ public class SearchController {
             rb.setStyle("-fx-text-fill: #333333; -fx-cursor: hand;");
             if (type.equals("ALL")) rb.setSelected(true);
             
-            // Auto-search when filter changes
             rb.selectedProperty().addListener((obs, old, isSelected) -> {
                 if (isSelected) handleSearch();
             });
             filterBox.getChildren().add(rb);
         }
         
-        // Live search as you type
         searchField.textProperty().addListener((obs, old, newVal) -> handleSearch());
         
         updateResultsCount();

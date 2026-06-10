@@ -38,14 +38,12 @@ public class StubServices {
         public void removeFacility(Facility f) { data.remove(f); }
     }
 
-    // ── Stub SearchResult ──
     public static class SearchResult {
         public final Facility facility;
         public final double distance;
         public SearchResult(Facility f, double d) { this.facility = f; this.distance = d; }
     }
 
-    // ── Stub SearchService ──
     public static class StubSearchService {
         private final StubFacilityService fs = new StubFacilityService();
 
@@ -72,7 +70,6 @@ public class StubServices {
         }
     }
 
-    // ── Stub Benchmark ──
     public static class BenchmarkResult {
         public final long linearSearchTimeNs;
         public final long kdTreeSearchTimeNs;
@@ -84,7 +81,6 @@ public class StubServices {
 
     public static class StubBenchmarkService {
         public java.util.List<BenchmarkResult> runBenchmarkSuite() {
-            // Fake exponential growth to prove O(n) vs O(log n)
             return java.util.List.of(
                 new BenchmarkResult(500, 100, 100),
                 new BenchmarkResult(2500, 150, 500),

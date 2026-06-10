@@ -33,27 +33,21 @@ public class BenchmarkService {
      * @return the benchmark results wrapped in a BenchmarkResult object
      */
     public BenchmarkResult runNearestNeighborBenchmark(int datasetSize, double targetX, double targetY) {
-        // 1. Generate Data
         List<Facility> rawList = SampleDataGenerator.generateRandomFacilities(datasetSize, 1000.0, 1000.0);
         
-        // 2. Build Tree
         KDTree tree = new KDTree();
         tree.buildBalanced(rawList);
 
-        // JVM WARMUP: Run both algorithms a few times without measuring
-        // to let the JVM Just-In-Time (JIT) compiler optimize the code.
         for (int i = 0; i < 50; i++) {
             tree.nearestNeighbor(targetX, targetY);
             linearSearch(rawList, targetX, targetY);
         }
 
-        // 3. Measure KD-Tree
         long kdStart = System.nanoTime();
         tree.nearestNeighbor(targetX, targetY);
         long kdEnd = System.nanoTime();
         long kdTime = kdEnd - kdStart;
 
-        // 4. Measure Linear Search
         long linearStart = System.nanoTime();
         linearSearch(rawList, targetX, targetY);
         long linearEnd = System.nanoTime();

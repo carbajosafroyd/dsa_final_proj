@@ -77,9 +77,6 @@ public class KDTree {
         this.totalSize = 0;
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // INSERT OPERATION — O(log n) average, O(n) worst case
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Inserts a facility into the KD-Tree.
@@ -121,33 +118,24 @@ public class KDTree {
      * @return the (possibly new) node at this position
      */
     private KDNode insertRecursive(KDNode node, Facility facility, int depth) {
-        // Base case: empty spot found — create a new node here
         if (node == null) {
             return new KDNode(facility, depth);
         }
 
-        // Determine which dimension to compare at this depth
-        // depth % 2: even depths → X (dimension 0), odd depths → Y (dimension 1)
         int dimension = node.getSplitDimension();
 
-        // Compare the facility's coordinate with this node's split value
         double facilityValue = facility.getCoordinate(dimension);
         double nodeValue = node.getSplitValue();
 
         if (facilityValue < nodeValue) {
-            // Facility's coordinate is smaller → go left
             node.setLeft(insertRecursive(node.getLeft(), facility, depth + 1));
         } else {
-            // Facility's coordinate is greater or equal → go right
             node.setRight(insertRecursive(node.getRight(), facility, depth + 1));
         }
 
         return node;
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // BALANCED CONSTRUCTION — O(n log n)
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Builds a balanced KD-Tree from a list of facilities.
@@ -180,7 +168,6 @@ public class KDTree {
             return;
         }
 
-        // Work on a mutable copy so we don't modify the caller's list
         List<Facility> mutableList = new ArrayList<>(facilities);
 
         root = buildBalancedRecursive(mutableList, 0);
@@ -200,26 +187,18 @@ public class KDTree {
             return null;
         }
 
-        // Only one element — it becomes a leaf node
         if (facilities.size() == 1) {
             return new KDNode(facilities.get(0), depth);
         }
 
-        // Determine the split dimension for this depth
         int dimension = depth % KDNode.DIMENSIONS;
 
-        // Sort by the current dimension to find the median
-        // Dimension 0 → sort by X; Dimension 1 → sort by Y
         facilities.sort(Comparator.comparingDouble(f -> f.getCoordinate(dimension)));
 
-        // Pick the median as the root of this subtree
         int medianIndex = facilities.size() / 2;
 
-        // Create this node with the median facility
         KDNode node = new KDNode(facilities.get(medianIndex), depth);
 
-        // Recursively build left subtree (elements before median)
-        // and right subtree (elements after median)
         List<Facility> leftList = facilities.subList(0, medianIndex);
         List<Facility> rightList = facilities.subList(medianIndex + 1, facilities.size());
 
@@ -229,9 +208,6 @@ public class KDTree {
         return node;
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // LAZY DELETION — O(log n) average
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Marks a facility as inactive (lazy deletion).
@@ -272,13 +248,11 @@ public class KDTree {
             return false;
         }
 
-        // Check if this node is the target
         if (node.getFacility().isActive() && node.getFacility().equals(target)) {
             node.getFacility().setActive(false);
             return true;
         }
 
-        // Determine which subtree to search based on split dimension
         int dimension = node.getSplitDimension();
         double targetValue = target.getCoordinate(dimension);
         double nodeValue = node.getSplitValue();
@@ -286,7 +260,6 @@ public class KDTree {
         if (targetValue < nodeValue) {
             return markInactive(node.getLeft(), target, depth + 1);
         } else {
-            // Check right subtree first, but also check left for equal values
             boolean found = markInactive(node.getRight(), target, depth + 1);
             if (!found && targetValue == nodeValue) {
                 found = markInactive(node.getLeft(), target, depth + 1);
@@ -306,9 +279,6 @@ public class KDTree {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // TRAVERSAL & UTILITY METHODS
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Returns a list of all <em>active</em> facilities in the tree.
@@ -375,9 +345,6 @@ public class KDTree {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // SEARCH OPERATIONS (to be implemented in Phases 5 & 6)
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Finds the nearest active facility to the given (x, y) coordinates.
@@ -403,7 +370,7 @@ public class KDTree {
         KDNode bestNode = nearestRecursive(root, x, y, 0, null);
 
         if (bestNode == null) {
-            return null; // Should only happen if all nodes are inactive
+            return null;
         }
 
         double distance = DistanceCalculator.euclideanDistance(
@@ -419,7 +386,6 @@ public class KDTree {
 
         KDNode best = currentBest;
 
-        // Check if the current node is active and closer than the current best
         if (node.getFacility().isActive()) {
             if (best == null) {
                 best = node;
@@ -435,7 +401,6 @@ public class KDTree {
             }
         }
 
-        // Determine which subtree to search first (the one that naturally contains the target)
         int dimension = node.getSplitDimension();
         double targetVal = (dimension == 0) ? targetX : targetY;
         double nodeVal = node.getSplitValue();
@@ -443,23 +408,18 @@ public class KDTree {
         KDNode firstSide = (targetVal < nodeVal) ? node.getLeft() : node.getRight();
         KDNode secondSide = (targetVal < nodeVal) ? node.getRight() : node.getLeft();
 
-        // 1. Always search the side the target point belongs to
         best = nearestRecursive(firstSide, targetX, targetY, depth + 1, best);
 
-        // 2. Check if we need to search the other side
         if (best != null) {
             double bestDistSq = DistanceCalculator.squaredDistance(
                     targetX, targetY, best.getFacility().getX(), best.getFacility().getY());
 
-            // Perpendicular distance from target to the splitting plane (squared)
             double axisDistSq = (targetVal - nodeVal) * (targetVal - nodeVal);
 
-            // If the splitting plane is closer than our current best, the other side might have a better point
             if (axisDistSq < bestDistSq) {
                 best = nearestRecursive(secondSide, targetX, targetY, depth + 1, best);
             }
         } else {
-            // If best is still null (e.g., all nodes visited so far were inactive), we must search the other side
             best = nearestRecursive(secondSide, targetX, targetY, depth + 1, best);
         }
 
@@ -482,19 +442,15 @@ public class KDTree {
             return new ArrayList<>();
         }
 
-        // Max-Heap: The furthest of the K-nearest elements sits at the root of the PriorityQueue.
-        // Collections.reverseOrder() ensures that the largest distance is polled first.
         PriorityQueue<SearchResult> pq = new PriorityQueue<>(Collections.reverseOrder());
 
         kNearestRecursive(root, x, y, k, 0, pq);
 
-        // Extract results from Max-Heap into a list
         List<SearchResult> result = new ArrayList<>();
         while (!pq.isEmpty()) {
             result.add(pq.poll());
         }
 
-        // The Max-Heap gives us elements from furthest to closest. Reverse to get closest first.
         Collections.reverse(result);
         return result;
     }
@@ -511,7 +467,6 @@ public class KDTree {
             if (pq.size() < k) {
                 pq.offer(new SearchResult(node.getFacility(), dist));
             } else if (dist < pq.peek().getDistance()) {
-                // We found a closer point. Remove the furthest point in our top K, and add this new one.
                 pq.poll();
                 pq.offer(new SearchResult(node.getFacility(), dist));
             }
@@ -526,12 +481,9 @@ public class KDTree {
 
         kNearestRecursive(firstSide, targetX, targetY, k, depth + 1, pq);
 
-        // Do we need to explore the other side?
         if (pq.size() < k) {
-            // We haven't even found K elements yet, we MUST search the other side
             kNearestRecursive(secondSide, targetX, targetY, k, depth + 1, pq);
         } else {
-            // Check if the splitting plane is closer than the FURTHEST point in our top K
             double worstDist = pq.peek().getDistance();
             double axisDist = Math.abs(targetVal - nodeVal);
 
@@ -563,10 +515,9 @@ public class KDTree {
             return results;
         }
 
-        double radiusSq = radius * radius; // Use squared radius to avoid Math.sqrt during traversal
+        double radiusSq = radius * radius;
         radiusRecursive(root, x, y, radius, radiusSq, 0, results);
 
-        // Sort by distance (closest first)
         Collections.sort(results);
         return results;
     }
@@ -581,7 +532,6 @@ public class KDTree {
                     targetX, targetY, node.getFacility().getX(), node.getFacility().getY());
             
             if (distSq <= radiusSq) {
-                // Point is inside the circle. Calculate true distance for the SearchResult.
                 results.add(new SearchResult(node.getFacility(), Math.sqrt(distSq)));
             }
         }
@@ -590,20 +540,15 @@ public class KDTree {
         double targetVal = (dimension == 0) ? targetX : targetY;
         double nodeVal = node.getSplitValue();
 
-        // Does the search circle overlap with the left half-plane?
         if (targetVal - radius <= nodeVal) {
             radiusRecursive(node.getLeft(), targetX, targetY, radius, radiusSq, depth + 1, results);
         }
 
-        // Does the search circle overlap with the right half-plane?
         if (targetVal + radius >= nodeVal) {
             radiusRecursive(node.getRight(), targetX, targetY, radius, radiusSq, depth + 1, results);
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // ACCESSORS
-    // ═══════════════════════════════════════════════════════════════════
 
     /**
      * Returns the root node of the tree.

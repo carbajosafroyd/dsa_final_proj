@@ -51,7 +51,6 @@ public class KDTreeTest {
 
         KDTree tree = new KDTree();
 
-        // Insert 5 sample DNSC facilities
         tree.insert(new Facility("Library", 5, 4, FacilityType.ACADEMIC, "Main Library"));
         tree.insert(new Facility("Clinic", 2, 3, FacilityType.MEDICAL, "Campus Clinic"));
         tree.insert(new Facility("Registrar", 8, 1, FacilityType.ADMINISTRATIVE, "Registrar Office"));
@@ -63,7 +62,6 @@ public class KDTreeTest {
         System.out.println("Height: " + tree.getHeight());
         System.out.println("Size: " + tree.getSize());
 
-        // Verify all facilities are in the tree
         List<Facility> all = tree.getAllFacilities();
         System.out.println("All facilities in tree:");
         for (Facility f : all) {
@@ -100,11 +98,9 @@ public class KDTreeTest {
         System.out.println("Tree: " + tree);
         System.out.println("Height: " + tree.getHeight());
 
-        // For 7 nodes, a balanced binary tree has height 3
         int height = tree.getHeight();
         System.out.println("Expected height: 3 (perfect balance for 7 nodes)");
 
-        // Verify root splits on X and is the median-X facility
         KDNode root = tree.getRoot();
         System.out.println("Root facility: " + root.getFacility().getName()
                 + " at (" + root.getFacility().getX() + ", " + root.getFacility().getY() + ")");
@@ -133,13 +129,11 @@ public class KDTreeTest {
         System.out.println("Before deletion: size = " + tree.getSize()
                 + ", total = " + tree.getTotalSize());
 
-        // Delete the clinic
         boolean deleted = tree.delete(new Facility("Clinic", 2, 3, FacilityType.MEDICAL, ""));
         System.out.println("Deleted 'Clinic': " + deleted);
         System.out.println("After deletion: size = " + tree.getSize()
                 + ", total = " + tree.getTotalSize());
 
-        // Verify clinic is not in active list
         List<Facility> active = tree.getAllFacilities();
         System.out.println("Active facilities:");
         for (Facility f : active) {
@@ -160,39 +154,33 @@ public class KDTreeTest {
     private static void testEdgeCases() {
         System.out.println("── Test 4: Edge Cases ─────────────────────────────────");
 
-        // Empty tree
         KDTree empty = new KDTree();
         assert empty.isEmpty() : "New tree should be empty";
         assert empty.getSize() == 0 : "Size should be 0";
         assert empty.getAllFacilities().isEmpty() : "Should return empty list";
         System.out.println("✅ Empty tree handled correctly.");
 
-        // Single node
         KDTree single = new KDTree();
         single.insert(new Facility("Only", 100, 200, FacilityType.UTILITY, ""));
         assert single.getSize() == 1 : "Size should be 1";
         assert single.getHeight() == 1 : "Height should be 1";
         System.out.println("✅ Single-node tree handled correctly.");
 
-        // Duplicate coordinates (different names)
         KDTree dupes = new KDTree();
         dupes.insert(new Facility("Entrance A", 100, 50, FacilityType.UTILITY, ""));
         dupes.insert(new Facility("Entrance B", 100, 50, FacilityType.UTILITY, ""));
         assert dupes.getSize() == 2 : "Both facilities should exist";
         System.out.println("✅ Duplicate coordinates handled correctly.");
 
-        // Build balanced with empty list
         KDTree emptyBuild = new KDTree();
         emptyBuild.buildBalanced(new ArrayList<>());
         assert emptyBuild.isEmpty() : "Should be empty after building from empty list";
         System.out.println("✅ Build from empty list handled correctly.");
 
-        // Contains on empty tree
         assert !empty.contains(new Facility("X", 0, 0, FacilityType.UTILITY, ""))
                 : "Contains should return false on empty tree";
         System.out.println("✅ Contains on empty tree handled correctly.");
 
-        // Delete from empty tree
         assert !empty.delete(new Facility("X", 0, 0, FacilityType.UTILITY, ""))
                 : "Delete should return false on empty tree";
         System.out.println("✅ Delete from empty tree handled correctly.\n");

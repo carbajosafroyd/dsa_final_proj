@@ -68,7 +68,6 @@ public class Facility {
         this.active = true;
     }
 
-    // ── Getters ──────────────────────────────────────────────────────
 
     public String getName() {
         return name;
@@ -124,7 +123,6 @@ public class Facility {
         return active;
     }
 
-    // ── Setters ──────────────────────────────────────────────────────
 
     public void setName(String name) {
         this.name = name;
@@ -154,7 +152,6 @@ public class Facility {
         this.active = active;
     }
 
-    // ── Object Overrides ─────────────────────────────────────────────
 
     /**
      * Two facilities are equal if they have the same name and coordinates.

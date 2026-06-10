@@ -49,7 +49,6 @@ public class KDNode {
         this.right = null;
     }
 
-    // ── Getters ──────────────────────────────────────────────────────
 
     public Facility getFacility() {
         return facility;
@@ -101,7 +100,6 @@ public class KDNode {
         return left == null && right == null;
     }
 
-    // ── Setters ──────────────────────────────────────────────────────
 
     public void setLeft(KDNode left) {
         this.left = left;

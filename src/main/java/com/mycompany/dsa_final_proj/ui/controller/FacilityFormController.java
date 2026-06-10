@@ -28,18 +28,15 @@ public class FacilityFormController {
 
     @FXML
     public void initialize() {
-        // Setup columns to read from the public final fields of our Stub Facility
         colName.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().name));
         colType.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().type));
         colX.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().x).asObject());
         colY.setCellValueFactory(data -> new SimpleDoubleProperty(data.getValue().y).asObject());
         colDesc.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().description));
 
-        // Load data
         masterData.addAll(facilityService.getAllFacilities());
         facilityTable.setItems(masterData);
 
-        // Setup filter
         ObservableList<String> types = FXCollections.observableArrayList(
             "ALL", "ACADEMIC", "MEDICAL", "SPORTS", "FOOD_SERVICE", "ADMINISTRATIVE", "UTILITY"
         );
@@ -111,7 +108,6 @@ public class FacilityFormController {
         dialog.setTitle(facility == null ? "Add Facility" : "Edit Facility");
         dialog.setHeaderText("Fill the details and click on the map below to set the exact location.");
 
-        // Add CSS to the dialog
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm());
         dialog.getDialogPane().getStyleClass().add("root-pane");
 
@@ -120,7 +116,6 @@ public class FacilityFormController {
 
         javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(15);
         
-        // Form Fields
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
@@ -149,7 +144,6 @@ public class FacilityFormController {
         grid.add(l3, 2, 0); grid.add(descField, 3, 0);
         grid.add(l4, 2, 1); grid.add(coordLabel, 3, 1);
 
-        // Map Section
         javafx.scene.layout.StackPane mapStack = new javafx.scene.layout.StackPane();
         mapStack.setStyle("-fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-background-color: #ffffff;");
         
@@ -190,7 +184,6 @@ public class FacilityFormController {
 
         dialog.getDialogPane().setContent(content);
 
-        // Disable Save button until Name and Coordinates are provided
         javafx.scene.Node saveButton = dialog.getDialogPane().lookupButton(saveButtonType);
         Runnable validate = () -> {
             saveButton.setDisable(nameField.getText().trim().isEmpty() || selectedCoords[0] == -1);

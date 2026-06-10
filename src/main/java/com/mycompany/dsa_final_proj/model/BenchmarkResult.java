@@ -39,7 +39,7 @@ public class BenchmarkResult {
      * Calculates how many times faster the KD-Tree was compared to linear search.
      */
     public double getSpeedupMultiplier() {
-        if (kdTreeTimeNanos == 0) return linearTimeNanos; // Prevent division by zero
+        if (kdTreeTimeNanos == 0) return linearTimeNanos;
         return (double) linearTimeNanos / kdTreeTimeNanos;
     }
 

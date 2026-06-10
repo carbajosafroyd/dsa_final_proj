@@ -26,7 +26,6 @@ public class SearchTest {
         KDTree tree = new KDTree();
         List<Facility> rawList = new ArrayList<>();
 
-        // Generate a grid of points
         for (int x = 10; x <= 100; x += 10) {
             for (int y = 10; y <= 100; y += 10) {
                 Facility f = new Facility("Fac " + x + "-" + y, x, y, FacilityType.ACADEMIC, "");
@@ -34,7 +33,6 @@ public class SearchTest {
             }
         }
         
-        // Build the tree balanced
         tree.buildBalanced(rawList);
         SearchService searchService = new SearchService(tree);
 
@@ -50,14 +48,11 @@ public class SearchTest {
     private static void testNearestNeighbor(SearchService service, List<Facility> rawList) {
         System.out.println("── Test: findNearest ───────────────────────────────────");
         
-        // Target point not exactly on a facility
         double tx = 33.0;
         double ty = 58.0;
 
-        // 1. KD-Tree Search
         SearchResult kdResult = service.findNearest(tx, ty);
 
-        // 2. Brute Force Linear Search (for validation)
         Facility bruteBest = null;
         double bruteBestDist = Double.MAX_VALUE;
         for (Facility f : rawList) {
@@ -83,15 +78,13 @@ public class SearchTest {
         double ty = 24.0;
         int K = 5;
 
-        // 1. KD-Tree Search
         List<SearchResult> kdResults = service.findKNearest(tx, ty, K);
 
-        // 2. Brute Force Linear Search (sort all, pick top K)
         List<SearchResult> bruteResults = new ArrayList<>();
         for (Facility f : rawList) {
             bruteResults.add(new SearchResult(f, DistanceCalculator.euclideanDistance(tx, ty, f.getX(), f.getY())));
         }
-        bruteResults.sort(null); // uses Comparable (distance ascending)
+        bruteResults.sort(null);
         bruteResults = bruteResults.subList(0, K);
 
         System.out.println("Target Coordinates: (" + tx + ", " + ty + ") | K = " + K);
@@ -115,10 +108,8 @@ public class SearchTest {
         double ty = 50.0;
         double radius = 15.0;
 
-        // 1. KD-Tree Search
         List<SearchResult> kdResults = service.findWithinRadius(tx, ty, radius);
 
-        // 2. Brute Force Linear Search
         List<SearchResult> bruteResults = new ArrayList<>();
         for (Facility f : rawList) {
             double d = DistanceCalculator.euclideanDistance(tx, ty, f.getX(), f.getY());

@@ -19,7 +19,6 @@ public class BenchmarkController {
 
     @FXML
     public void initialize() {
-        // Run immediately on load
         handleRunBenchmark();
     }
 
@@ -43,7 +42,6 @@ public class BenchmarkController {
         performanceChart.getData().add(linearSeries);
         performanceChart.getData().add(kdSeries);
 
-        // Update the stats panel with the highest N result
         if (!results.isEmpty()) {
             BenchmarkResult maxRes = results.get(results.size() - 1);
             linearTimeLabel.setText(String.format("%,d ns", maxRes.linearSearchTimeNs));

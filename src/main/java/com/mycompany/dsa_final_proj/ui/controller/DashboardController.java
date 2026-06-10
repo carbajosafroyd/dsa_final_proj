@@ -21,11 +21,9 @@ public class DashboardController {
     public void initialize() {
         facilityCountLabel.setText(String.valueOf(facilityService.getSize()));
         
-        // Group facilities by type
         Map<String, Long> typeCounts = facilityService.getAllFacilities().stream()
             .collect(Collectors.groupingBy(f -> f.type, Collectors.counting()));
             
-        // Populate Pie Chart
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         for (Map.Entry<String, Long> entry : typeCounts.entrySet()) {
             pieChartData.add(new PieChart.Data(entry.getKey(), entry.getValue()));

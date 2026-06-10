@@ -30,12 +30,10 @@ import java.util.List;
  */
 public class DataStore {
 
-    // Save in the user's home directory so it works regardless of where the app is run
     private static final String DATA_FILE = System.getProperty("user.home") + "/dnsc_facilities.json";
     private final Gson gson;
 
     public DataStore() {
-        // Pretty printing makes the JSON file readable in a text editor
         this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
@@ -61,7 +59,7 @@ public class DataStore {
     public List<Facility> load() {
         File file = new File(DATA_FILE);
         if (!file.exists()) {
-            return new ArrayList<>(); // Return empty list for the very first run
+            return new ArrayList<>();
         }
 
         try (FileReader reader = new FileReader(file)) {
