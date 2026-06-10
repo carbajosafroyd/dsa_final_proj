@@ -14,61 +14,67 @@ Alfredo A. Soco
 ---
 
 ### ABSTRACT
-Modern campus environments require efficient navigation tools to facilitate the rapid location of academic and administrative resources. This study presents the development of the DNSC Smart Campus Facility Finder, a specialized application utilizing a 2-Dimensional K-Dimensional Tree (KD-Tree) to optimize spatial search operations. The research addresses the limitations of traditional linear search methods, which exhibit $O(n)$ time complexity and fail to scale effectively with increasing dataset sizes. By implementing a KD-Tree, the system achieves an average-case search complexity of $O(\log n)$. Empirical results demonstrate that the proposed system outperforms brute-force methods by up to 580 times in large-scale scenarios. The findings suggest that space-partitioning data structures are essential for developing responsive location-based services in institutional settings.
+Efficient campus navigation depends on the ability to quickly locate academic and administrative facilities. This paper discusses the development of the DNSC Smart Campus Facility Finder, an application that utilizes a 2-Dimensional K-Dimensional Tree (KD-Tree) to optimize spatial search operations. We addressed the scaling issues found in traditional linear search methods, which often lead to high latency as datasets grow. By implementing a KD-Tree, the system achieved an average-case search complexity of $O(\log n)$. Our tests showed that this implementation is significantly faster than brute-force methods, particularly when handling thousands of simulated data points. This study highlights the practical importance of using space-partitioning algorithms for local institutional applications.
 
 ---
 
-## I. INTRODUCTION
+## I. SYSTEM OVERVIEW
 
-### A. System Purpose
-The DNSC Smart Campus Facility Finder is designed to assist the Davao del Norte State College (DNSC) community in navigating the campus more effectively. As the college expands, identifying the nearest facilities—such as the library, clinics, or specific laboratories—becomes increasingly complex. The primary purpose of this system is to provide an interactive, real-time tool that accurately identifies and highlights facilities based on their spatial proximity to the user.
+### a. System Purpose and Problem Statement
+The primary goal of the DNSC Smart Campus Facility Finder is to provide the Davao del Norte State College (DNSC) community with a reliable tool for identifying facility locations in real-time. As campuses expand and become more densely packed with buildings and offices, simple list-based search becomes inefficient. Users need a way to find the closest facility to their current coordinates without experiencing significant software lag.
 
-### B. Problem Statement
-The standard approach to searching for facilities in a database often involves a linear scan, where the system calculates the distance from the query point to every entry in the list. Mathematically, this is expressed as a brute-force search with a time complexity of $O(n)$. While this method is functional for small datasets, it leads to significant latency in environments with high query volumes or large-scale geographical data. There is a clear need for a spatial indexing mechanism that can prune the search space and provide near-instantaneous results.
+The technical problem we identified is the inefficiency of the "Nearest Neighbor Search" (NNS) when using standard array-based data structures. In many basic applications, locations are stored in a simple list, requiring the system to calculate the Euclidean distance for every single entry during a search query. This brute-force method results in a time complexity of $O(n)$, which means the search time increases linearly with the number of facilities [1]. To solve this, our team developed a system that organizes facility coordinates into a KD-Tree, allowing the software to prune unnecessary calculations and provide instantaneous feedback even as more facilities are added to the campus map.
 
 ---
 
 ## II. ALGORITHM ASSESSMENT
 
-### A. Background of the Algorithm
-The K-Dimensional Tree (KD-Tree) is a non-linear data structure specifically engineered for organizing points in a multi-dimensional space. First proposed by Bentley in 1975, the KD-Tree is a variant of a binary search tree where each node represents a $k$-dimensional point [3]. For campus navigation, $k=2$ represents the X and Y coordinates on a Cartesian plane. The algorithm works by recursively partitioning the search space into half-spaces, creating a hierarchical structure that allows for efficient range and nearest neighbor queries [4].
+### a. Background of the Algorithm
+The K-Dimensional Tree (KD-Tree) is a specialized binary search tree used for organizing points in a $k$-dimensional space. It was first developed by Jon Bentley in 1975 to handle multi-dimensional search keys [3]. In our project, we focused on $k=2$, where the dimensions represent the X and Y coordinates on the campus map. Unlike a standard BST that only splits data once, the KD-Tree partitions space into recursive regions, making it highly effective for spatial indexing and proximity-based queries [4].
 
-### B. Time Complexity Analysis
-The performance of the system is grounded in the logarithmic efficiency of the KD-Tree.
+### b. Time Complexity
+The core benefit of the KD-Tree is its ability to reduce search time from linear to logarithmic.
 
-| Scenario | Complexity | Description |
+| Scenario | Complexity | Logic |
 | :--- | :--- | :--- |
-| **Average Search** | $O(\log n)$ | Achieved through recursive spatial pruning. |
-| **Worst Case Search** | $O(n)$ | Occurs if the tree is highly unbalanced (linked-list structure). |
-| **Balanced Construction** | $O(n \log n)$ | Sorting points by median at each level to ensure balance. |
+| **Average Search** | $O(\log n)$ | The algorithm eliminates half of the search space at each step. |
+| **Worst Case Search** | $O(n)$ | Occurs if the points are inserted in a way that creates a deep, unbalanced tree. |
+| **Balanced Construction** | $O(n \log n)$ | Required to ensure the tree remains efficient for searching. |
 
-By utilizing median-based construction, the system maintains the $O(\log n)$ average case, ensuring that even with 1,000,000 simulated facilities, the search remains extremely responsive [2].
+To avoid the worst-case scenario during our demonstration, we implemented a median-based construction method. This ensures the tree is always balanced from the start, keeping our search operations within the $O(\log n)$ range [2].
 
-### C. Algorithm Mechanics and Logical Flow
-The system follows a specific logical flow for spatial organization:
-1.  **Spatial Partitioning:** At the root node, the space is split vertically based on the median X-coordinate. The next level splits the remaining space horizontally based on the median Y-coordinate. This alternation continues until every facility is assigned to a node.
-2.  **Pruning Logic:** During a search, the algorithm calculates the distance to the splitting plane. If the distance to the plane is greater than the distance to the current best neighbor, the algorithm "prunes" or ignores the entire opposite branch of the tree, drastically reducing the number of calculations [4].
+### c. Algorithm Mechanics and Logical Flow
+The KD-Tree functions by alternating the splitting dimension at each level of the tree. In our 2D implementation, the root node splits the dataset based on the X-coordinate. Its children then split the remaining data based on the Y-coordinate, and so on. This creates a "checkerboard" of regions that the system can navigate.
 
-### D. Comparative Analysis
-The following table summarizes the performance disparity between the implemented KD-Tree and a standard ArrayList linear scan.
+When a user clicks on the map to find the nearest facility, the algorithm performs the following:
+1.  **Binary Search:** It traverses down the tree to find the "leaf" node that would theoretically contain the click point.
+2.  **Backtracking:** It works its way back up the tree, checking if any other nodes are closer than the current best.
+3.  **Spatial Pruning:** If the distance to a splitting line is greater than the distance to the current best neighbor, the algorithm completely skips the other side of that line. This is the "secret" to its speed, as it allows the system to ignore thousands of facilities that are obviously too far away [4].
 
-**Table I: Performance Benchmark Results**
+### d. Comparative Analysis
+We tested our KD-Tree implementation against a standard ArrayList (Linear Search) to verify its efficiency. We used a randomized dataset with coordinates ranging from 0 to 1,000 to simulate a large campus environment.
 
-| Facilities ($n$) | Linear Scan ($O(n)$) | KD-Tree ($O(\log n)$) | Efficiency Gain |
+**Table I: Benchmarking KD-Tree vs. Linear Search**
+
+| Dataset Size ($n$) | Linear Search ($O(n)$) | KD-Tree Search ($O(\log n)$) | Efficiency Gain |
 | :--- | :--- | :--- | :--- |
-| 100 | 900 ns | 600 ns | 1.50x |
-| 10,000 | 25,500 ns | 3,100 ns | 8.23x |
-| 1,000,000 | 6,331,000 ns | 10,900 ns | **580.83x** |
+| 100 | 900 ns | 600 ns | 1.5x faster |
+| 10,000 | 25,500 ns | 3,100 ns | 8.2x faster |
+| 1,000,000 | 6,331,000 ns | 10,900 ns | **580.8x faster** |
+
+The data shows that while a linear search is acceptable for 100 facilities, it becomes significantly slower as the count reaches one million. The KD-Tree, however, remains consistently fast, proving that the $O(\log n)$ complexity is highly effective for large-scale spatial data.
 
 ---
 
-## III. DISCUSSION AND CONCLUSION
+## III. DISCUSSION
 
-### A. Discussion
-The results of the comparative analysis confirm that the KD-Tree is the superior choice for spatial discovery systems. The bottleneck of the $O(n)$ linear scan becomes apparent at 1,000,000 facilities, where the time taken is over 600 times that of the KD-Tree. The KD-Tree's ability to exclude irrelevant map regions through spatial pruning allows it to handle massive datasets with negligible increases in latency. This project demonstrates that the KD-Tree remains computationally efficient for multidimensional search where standard binary trees or linear arrays fail to scale [2], [4].
+Our implementation of the 2D KD-Tree for the DNSC Smart Campus Facility Finder successfully addressed the performance bottlenecks of traditional search methods. By utilizing spatial partitioning, we were able to provide a search experience that is both scalable and responsive. The most significant finding from our testing was the impact of "pruning"—the ability to ignore entire sections of the map during a search.
 
-### B. Conclusion
-The DNSC Smart Campus Facility Finder successfully demonstrates the practical application of space-partitioning data structures in a real-world institutional context. By transitioning from a traditional linear search to a 2-Dimensional KD-Tree, the system significantly optimizes the facility discovery process, providing Davao del Norte State College with a scalable and high-performance tool. The implementation of median-based construction ensures that the system maintains its logarithmic efficiency, effectively solving the problem of spatial search overhead. This study concludes that advanced data structures are vital for the development of responsive and future-ready campus management solutions.
+While the KD-Tree is more complex to implement than a simple list, the performance gain of over 500x in large-scale scenarios justifies the effort. We found that using median-based construction was essential to prevent the tree from becoming unbalanced, which would have degraded the performance back to $O(n)$. Overall, the system demonstrates that choosing the right data structure is critical when building tools that rely on real-time spatial calculations. This study confirms that the KD-Tree is a vital component for any modern campus navigation system [2], [4].
+
+## IV. CONCLUSION
+
+In conclusion, the DNSC Smart Campus Facility Finder successfully achieved its goal of optimizing facility discovery through advanced spatial indexing. By transitioning from a linear array-based search to a 2-Dimensional KD-Tree, we reduced the search complexity to a logarithmic scale, ensuring the system remains high-performing even as the campus dataset grows. The empirical data collected during our benchmarking phase confirmed that our implementation is significantly more efficient than brute-force methods, especially in high-density scenarios. This project highlights the practical necessity of space-partitioning data structures in solving real-world geographical search problems and provides Davao del Norte State College with a robust framework for future campus navigation developments.
 
 ---
 
@@ -80,4 +86,5 @@ The DNSC Smart Campus Facility Finder successfully demonstrates the practical ap
 [3] J. L. Bentley, "Multidimensional binary search trees used for associative searching," *Communications of the ACM*, vol. 18, no. 9, pp. 509–517, Sep. 1975.
 
 [4] H. Samet, *Foundations of Multidimensional and Metric Data Structures*. San Francisco, CA, USA: Morgan Kaufmann, 2006.
+
 
