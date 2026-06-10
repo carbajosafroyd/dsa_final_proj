@@ -9,19 +9,23 @@
 
 **[Slide: Title, group number, names]**
 
-"Good day, Sir. We are Group ___, and our project is the **DNSC Smart Campus Facility Finder**.
+"Good day, Sir. We are Group KD-Tree, and our project is the **DNSC Facility Finder**.
 
-Our members are: [say all 5 names].
+Our members are: 
+JHON KYLE L. COLLADOS
+ED BERNARD A. LUZON
+FROYD D. CARBAJOSA
+ALFREDO A. SOCO
+ETHAN MAR D. DEMETERIO    
 
 **[Slide: Problem → Solution]**
+so why we chose this project "DNSC Facility Finder", because we noticed that some incoming first year students encoutered difficulties in finding some facilities in the campus like for example a student is standing somewhere on campus and you need to find the nearest clinic, or the nearest canteen, or the OSDS for their admission process. and also if you ask some seniors in the campus it will take time.
 
-The problem is simple — if you're standing somewhere on campus and you need to find the nearest clinic, or the nearest canteen, how do you figure that out fast?
+so the traditional or basic approach is to store everything in a list and check the distance to every facility one by one. That's O(n) time complexity — it gets slow when the data grows.
 
-The basic approach is to store everything in a list and check the distance to every facility one by one. That's O(n) — it gets slow when the data grows.
+Our solution is to use a **KD-Tree**, which is a binary tree that organizes points by their X and Y coordinates. It can skip entire sections of the map during a search, so instead of checking everything, it only checks around log n nodes. Way faster and more efficient.
 
-Our solution is to use a **KD-Tree**, which is a binary tree that organizes points by their X and Y coordinates. It can skip entire sections of the map during a search, so instead of checking everything, it only checks around log n nodes. Way faster.
-
-Let me pass it to [Member 2] to explain how the KD-Tree works."
+Let me pass it to Froyd to explain how the KD-Tree works."
 
 ---
 
@@ -128,12 +132,10 @@ That proves our data structure works. [Member 5] will close us out."
 
 The UI never touches the KD-Tree directly — it goes through the service layer. That's Separation of Concerns.
 
-
-
 **[Slide: Conclusion]**
 
 So in summary — we built a working facility finder that uses a KD-Tree for fast spatial search. It supports full CRUD, three search modes with map visualization, and our benchmark proves it's up to 580 times faster than linear search.
 
-Thank you, Sir. 
+Thank you, Sir.
 
 ---
